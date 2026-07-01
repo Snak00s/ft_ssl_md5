@@ -2,7 +2,7 @@
 
 // +++++++++++++++++++++++++++++++++++++++++++++
 
-unsigned char *pad_str(char *str, size_t *pad_len)
+static unsigned char *pad_str(char *str, size_t *pad_len)
 {
 	uint32_t	msg_len = ft_strlen(str);
 	uint8_t		*new_msg = NULL;
@@ -26,72 +26,19 @@ unsigned char *pad_str(char *str, size_t *pad_len)
 	return (new_msg);
 }
 
-uint32_t set32intbit(unsigned char *str)
+static void build_digest(char *buff, uint32_t a, uint32_t b, uint32_t c, uint32_t d)
 {
-	uint8_t b1 = (uint8_t)(str[0]);
-	uint8_t b2 = (uint8_t)(str[1]);
-	uint8_t b3 = (uint8_t)(str[2]);
-	uint8_t b4 = (uint8_t)(str[3]);
-
-	uint32_t newnbr = ((uint32_t)b4 << 24) | ((uint32_t)b3 << 16) | ((uint32_t)b2 << 8) | ((uint32_t)b1);
-
-	return (newnbr);
-}
-
-uint32_t leftRotate(uint32_t n, uint32_t t)
-{
-    return ((n << t) | (n >> (32 - t)));
-}
-
-void	hexaton(char *hexa, size_t len)
-{
-	size_t	i = 0;
-	while (i <= len / 2)
-	{
-		char c = hexa[i];
-		hexa[i] = hexa[len - i];
-		hexa[len - i] = c;
-		i++;
-	}
-}
-
-char *hexaitoa(uint32_t byte)
-{
-	char set[] = "0123456789abcdef";
-	char sample[100];
-
-	ft_memset(sample, 0, 100);
-	int i = 0;
-	uint32_t val = byte;
-	while (val)
-	{
-		uint32_t reste = val % 16;
-		sample[i++] = set[reste];
-		val /= 16;
-	}
-	hexaton(sample, i - 1);
-
-	char *ret = ft_strdup(sample);
-	if (!ret)
-		return (NULL);
-	return (ret);
-}
-
-char *print_digest(uint32_t a, uint32_t b, uint32_t c, uint32_t d)
-{
-	char *ret = NULL;
     uint32_t regs[4] = {a, b, c, d};
+	int buff_pos = 0;
     for (int i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++) {
-			char *hexabyte = hexaitoa((regs[i] >> (8 * j)) & 0xFF);
-			if (!hexabyte)
-				return (NULL);
-			ret = ft_strjoin_free(ret, hexabyte);
-			free(hexabyte);
+		for (int j = 0; j < 4; j++)
+		{
+			hexaitoa(buff + buff_pos, (regs[i] >> (8 * j)) & 0xFF);
+			buff_pos += 2;
 		}
 	}
-	return(ret);
+	return ;
 }
 
 
@@ -155,15 +102,11 @@ char *md5(char *str)
 		c0 += C;
 		d0 += D;
 	}
-	// char crypt[33];
-	// ft_memset(crypt, 0, 33);
-	char *test = print_digest(a0, b0, c0, d0);
-	if (!test)
-		return (NULL);
+	char crypt[33];
+	ft_memset(crypt, 0, 33);
 
-	printf(test);
+	build_digest(crypt, a0, b0, c0, d0);
 
 	free(pad);
-	free(test);
-	return (NULL);
+	return (ft_strdup(crypt));
 }

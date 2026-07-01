@@ -39,7 +39,8 @@ int main(int argc, char **argv)
 	ft_memset(&flags, 0, sizeof(flags));
 
 	//---parsing
-	if (argc < 2) {
+	if (argc < 2)
+	{
 		write(2, "usage: ft_ssl command [flags] [file/string]\n", 45);
 		return (1);
 	}
@@ -56,18 +57,21 @@ int main(int argc, char **argv)
 	}
 	//---
 
-	hash_t		algo[] = {
+	hash_t	algo[] = {
 		{"md5", md5},
 		{"sha256", sha256},
 	};
 
-	hashfunc_t function_caller = NULL;
+	hashfunc_t	function_caller = NULL;
+	char		*algo_name = NULL;
 
 	size_t nbr_entry = sizeof(algo) / sizeof(*algo);
 	for (size_t i = 0; i < nbr_entry; i++)
 	{
-		if (ft_strncmp(argv[1], algo[i].name, ft_strlen((char *)algo[i].name)) == 0) {
+		if (ft_strncmp(argv[1], algo[i].name, ft_strlen((char *)algo[i].name)) == 0)
+		{
 			function_caller = algo[i].func;
+			algo_name = (char *)algo[i].name;
 			break;
 		}
 	}
@@ -80,9 +84,15 @@ int main(int argc, char **argv)
 		return (1);
 	}
 
-	for (int i = f_ind; i < argc; i++) {
-		// printf("(%s)= ", argv[i]);
-		function_caller(argv[i]);
+	(void)algo_name;
+	for (int i = f_ind; i < argc; i++)
+	{
+		char *digest = function_caller(argv[i]);
+		if (!digest)
+			return (1);
+		write(1, digest, ft_strlen(digest));
+		write(1, "\n", 1);
+		free(digest);
 	}
 
 	return (0);

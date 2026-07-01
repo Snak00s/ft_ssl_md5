@@ -32,7 +32,11 @@ char	*md5(char *str);
 char	*sha256(char *str);
 
 //utils
-void	str_bad_cmd(char *cmd);
+void		str_bad_cmd(char *cmd);
+void		hexaitoa(char *buff, uint32_t byte);
+void		hexaton(char *hexa, size_t len);
+uint32_t	set32intbit(unsigned char *str);
+uint32_t	leftRotate(uint32_t n, uint32_t t);
 
 
 #endif
