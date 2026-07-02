@@ -1,6 +1,6 @@
 #include"ssl.h"
 
-int	parse_flags(char **argv, int argc, ssl_flags *flags)
+static int	parse_flags(char **argv, int argc, ssl_flags *flags)
 {
 	int i = 2;
 	while (i < argc)
@@ -33,37 +33,52 @@ int	parse_flags(char **argv, int argc, ssl_flags *flags)
 	return (i);
 }
 
-char *read_file(char *filename)
+// static int	read_fd(int fd, char **buff)
+// {
+// 	char *line = get_next_line(fd);
+// 	if (!line)
+// 		return (0);
+// 	while (line)
+// 	{
+// 		*buff = ft_strjoin_free(*buff, line);
+// 		if (!*buff)
+// 			return (free(line), 0);
+// 		free(line);
+// 		line = get_next_line(fd);
+// 	}
+// 	return (1);
+// }
+
+static int	read_file(char *filename, char **buff)
 {
 	int fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
-		printf("Invalid file\n");
-		return (NULL);
+		write(1, "Invalid file\n", 14);
+		return (0);
 	}
-	char *text = NULL;
 	char *line = get_next_line(fd);
 	if (!line)
 	{
 		close(fd);
-		return (NULL);
+		return (0);
 	}
 	while (line)
 	{
-		text = ft_strjoin_free(text, line);
-		if (!text)
+		*buff = ft_strjoin_free(*buff, line);
+		if (!*buff)
 		{
 			close(fd);
-			return (free(line), NULL);
+			return (free(line), 0);
 		}
 		free(line);
 		line = get_next_line(fd);
 	}
 	close(fd);
-	return (text);
+	return (1);
 }
 
-int	find_hashing_algo(char *name, hash_t *algo, hash_t *algo_list, size_t nbr_entry)
+static int	find_hashing_algo(char *name, hash_t *algo, hash_t *algo_list, size_t nbr_entry)
 {
 	algo->func = NULL;
 	algo->name = NULL;
@@ -84,12 +99,22 @@ int	find_hashing_algo(char *name, hash_t *algo, hash_t *algo_list, size_t nbr_en
 	return (1);
 }
 
-int process_algo(char **arg, int idx_begin, int idx_end, hash_t *algo)
+void	print_result(const char *algo_name, char *digest, char *arg, ssl_flags *flags)
+{
+	(void)flags;
+	if (flags->r_flag)
+		ft_printf("%s %s\n", digest, arg);
+	else
+		ft_printf("%s (%s) = %s\n", algo_name, arg, digest);
+	return ;
+}
+
+static int process_algo(char **arg, int idx_begin, int idx_end, hash_t *algo, ssl_flags *flags)
 {
 	for (int i = idx_begin; i < idx_end; i++)
 	{
-		char *text = read_file(arg[i]);
-		if (!text)
+		char *text = NULL;
+		if (!read_file(arg[i], &text))
 			return (0);
 		char *digest = algo->func(text);
 		if (!digest)
@@ -97,8 +122,7 @@ int process_algo(char **arg, int idx_begin, int idx_end, hash_t *algo)
 			free(text);
 			return (0);
 		}
-		write(1, digest, ft_strlen(digest));
-		write(1, "\n", 1);
+		print_result(algo->name, digest, arg[i], flags);
 		free(text);
 		free(digest);
 	}
@@ -133,7 +157,7 @@ int main(int argc, char **argv)
 		return (1);
 	}
 
-	if (!process_algo(argv, f_ind, argc, &algo))
+	if (!process_algo(argv, f_ind, argc, &algo, &flags))
 		return (1);
 
 	return (0);
