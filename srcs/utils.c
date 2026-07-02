@@ -14,6 +14,19 @@ void str_bad_cmd(char *cmd)
 	write(2, msg, ft_strlen(msg));
 }
 
+void	invalid_thing(char *arg, char *type)
+{
+	const int size = 34 + ft_strlen(arg) + ft_strlen(type);
+	char err_msg[size + 1];
+	ft_memset(err_msg, 0, size + 1);
+	ft_strlcat(err_msg, "ft_ssl: Error: \'", size + 1);
+	ft_strlcat(err_msg, arg, size + 1);
+	ft_strlcat(err_msg, "\' is an invalid ", size + 1);
+	ft_strlcat(err_msg, type, size + 1);
+	ft_strlcat(err_msg, ".\n", size + 1);
+	write(1, err_msg, size);
+}
+
 void	hexaton(char *hexa, size_t len)
 {
 	size_t	i = 0;
@@ -40,6 +53,13 @@ void	hexaitoa(char *buff, uint32_t byte)
 		sample[i++] = set[reste];
 		val /= 16;
 	}
+	if (byte == 0)
+	{
+		sample[i++] = '0';
+		sample[i++] = '0';
+	}
+	else if (byte < 16)
+		sample[i++] = '0';
 	hexaton(sample, i - 1);
 	ft_memcpy(buff, sample, 2);
 	return ;

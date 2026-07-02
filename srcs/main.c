@@ -33,6 +33,23 @@ int	parse_flags(char **argv, int argc, ssl_flags *flags)
 	return (i);
 }
 
+char *read_file(int fd)
+{
+	char *text = NULL;
+	char *line = get_next_line(fd);
+	if (!line)
+		return (NULL);
+	while (line)
+	{
+		text = ft_strjoin_free(text, line);
+		if (!text)
+			return (free(line), NULL);
+		free(line);
+		line = get_next_line(fd);
+	}
+	return (text);
+}
+
 int main(int argc, char **argv)
 {
 	ssl_flags	flags;
@@ -46,13 +63,9 @@ int main(int argc, char **argv)
 	}
 
 	int f_ind = parse_flags(argv, argc, &flags);
-
 	if (f_ind < 0)
 	{
-		f_ind = -f_ind;
-		write(1, "ft_ssl: Error: \'", 17);
-		write(1, argv[f_ind], ft_strlen(argv[f_ind]));
-		write(1, "\' is an invalid flag.\n", 23);
+		invalid_thing(argv[-f_ind], "flag");
 		return (1);
 	}
 	//---
@@ -78,20 +91,35 @@ int main(int argc, char **argv)
 
 	if (!function_caller)
 	{
-		write(1, "ft_ssl: Error: \'", 17);
-		write(1, argv[1], ft_strlen(argv[1]));
-		write(1, "\' is an invalid command.\n", 25);
+		invalid_thing(argv[1], "command");
 		return (1);
 	}
 
 	(void)algo_name;
 	for (int i = f_ind; i < argc; i++)
 	{
-		char *digest = function_caller(argv[i]);
-		if (!digest)
+		int fd = open(argv[i], O_RDONLY);
+		if (fd < 0)
+		{
+			printf("Invalid file\n");
+			continue;
+		}
+		char *text = read_file(fd);
+		if (!text)
+		{
+			close(fd);
 			return (1);
+		}
+		close(fd);
+		char *digest = function_caller(text);
+		if (!digest)
+		{
+			free(text);
+			return (1);
+		}
 		write(1, digest, ft_strlen(digest));
 		write(1, "\n", 1);
+		free(text);
 		free(digest);
 	}
 
