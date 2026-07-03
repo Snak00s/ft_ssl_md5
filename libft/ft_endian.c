@@ -1,6 +1,6 @@
 #include"libft.h"
 
-uint64_t	swapLongEndian(uint64_t nbr)
+uint64_t	ft_swapLongEndian(uint64_t nbr)
 {
 	uint8_t b1 = (uint8_t)(nbr >> 56);
 	uint8_t b2 = (uint8_t)(nbr >> 48);
@@ -16,7 +16,7 @@ uint64_t	swapLongEndian(uint64_t nbr)
 	return (newnbr);
 }
 
-uint32_t	swapIntEndian(uint32_t nbr)
+uint32_t	ft_swapIntEndian(uint32_t nbr)
 {
 	uint8_t b1 = (uint8_t)(nbr >> 24);
 	uint8_t b2 = (uint8_t)(nbr >> 16);
@@ -28,7 +28,7 @@ uint32_t	swapIntEndian(uint32_t nbr)
 	return (newnbr);
 }
 
-uint16_t	swapShortEndian(uint16_t nbr)
+uint16_t	ft_swapShortEndian(uint16_t nbr)
 {
 	uint8_t b1 = (uint8_t)(nbr >> 8);
 	uint8_t b2 = (uint8_t)(nbr);

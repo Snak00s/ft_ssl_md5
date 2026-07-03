@@ -6,7 +6,7 @@
 /*   By: tpinton <tpinton@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 18:03:38 by tpinton           #+#    #+#             */
-/*   Updated: 2026/06/22 16:48:53 by tpinton          ###   ########.fr       */
+/*   Updated: 2026/07/03 16:14:03 by tpinton          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,7 @@ void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 char	*ft_strcapitalize(char *str);
 char	*ft_strdecapitalize(char *str);
+uint64_t	ft_swapLongEndian(uint64_t nbr);
+uint32_t	ft_swapIntEndian(uint32_t nbr);
+uint16_t	ft_swapShortEndian(uint16_t nbr);
 #endif

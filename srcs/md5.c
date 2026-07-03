@@ -1,7 +1,5 @@
 #include"ssl.h"
 
-// +++++++++++++++++++++++++++++++++++++++++++++
-
 static unsigned char *pad_str(char *str, size_t *pad_len)
 {
 	uint32_t	msg_len = ft_strlen(str);
