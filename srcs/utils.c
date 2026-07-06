@@ -86,3 +86,20 @@ uint32_t rightRotate(uint32_t value, uint32_t n)
 {
 	return ((value >> n) | (value << (32 - n)));
 }
+
+void	free_lst(t_list *s_env, int mode)
+{
+	t_list	*temp;
+
+	if (!s_env)
+		return ;
+	while (s_env)
+	{
+		temp = s_env;
+		s_env = s_env->next;
+		if (mode == 1)
+			free(temp->content);
+		free(temp);
+	}
+	return ;
+}

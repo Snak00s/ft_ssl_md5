@@ -107,6 +107,7 @@ char *sha256(char *str)
 		base[6] += g;
 		base[7] += h;
 	}
+	free(pad);
 	char crypt[65];
 	ft_memset(crypt, 0, 65);
 	build_digest(crypt, base);
