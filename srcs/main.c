@@ -185,8 +185,6 @@ static int process_algo(char **arg, int idx_begin, int idx_end, hash_t *algo, ss
 
 int main(int argc, char **argv)
 {
-	// sha256("test");
-	// return (0);
 	ssl_flags	flags;
 	ft_memset(&flags, 0, sizeof(flags));
 

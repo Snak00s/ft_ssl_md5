@@ -37,6 +37,7 @@ void		hexaitoa(char *buff, uint32_t byte);
 void		hexaton(char *hexa, size_t len);
 uint32_t	set32intbit(unsigned char *str);
 uint32_t	leftRotate(uint32_t n, uint32_t t);
+uint32_t	rightRotate(uint32_t value, uint32_t n);
 void		invalid_thing(char *arg, char *type);
 
 

@@ -24,11 +24,6 @@ static unsigned char *pad_str(char *str, size_t *pad_len)
 	return (new_msg);
 }
 
-uint32_t rightRotate(uint32_t x, uint32_t n)
-{
-    return (x >> n) | (x << (32 - n));
-}
-
 static void build_digest(char *buff, uint32_t *base)
 {
 	int buff_pos = 0;
@@ -67,7 +62,7 @@ char *sha256(char *str)
 		uint32_t w[64];
 		ft_memset(&w, 0, 64);
 		for (int i = 0; i < 16; i++)
-			w[i] = set32intbit(word + (4 * i));
+			w[i] = ft_swapIntEndian(set32intbit(word + (4 * i)));
 		for (int i = 16; i < 64; i++)
 		{
 			uint32_t s0 = (rightRotate(w[i - 15], 7)) ^ (rightRotate(w[i - 15], 18)) ^ (w[i - 15] >> 3);
@@ -112,9 +107,8 @@ char *sha256(char *str)
 		base[6] += g;
 		base[7] += h;
 	}
-	char crypt[64];
-	ft_memset(crypt, 0, 64);
+	char crypt[65];
+	ft_memset(crypt, 0, 65);
 	build_digest(crypt, base);
-	printf("%s\n", crypt);
-	return (NULL);
+	return (ft_strdup(crypt));
 }

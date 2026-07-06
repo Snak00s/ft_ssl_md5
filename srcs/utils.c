@@ -77,7 +77,12 @@ uint32_t set32intbit(unsigned char *str)
 	return (newnbr);
 }
 
-uint32_t leftRotate(uint32_t n, uint32_t t)
+uint32_t leftRotate(uint32_t value, uint32_t n)
 {
-    return ((n << t) | (n >> (32 - t)));
+    return ((value << n) | (value >> (32 - n)));
+}
+
+uint32_t rightRotate(uint32_t value, uint32_t n)
+{
+	return ((value >> n) | (value << (32 - n)));
 }
