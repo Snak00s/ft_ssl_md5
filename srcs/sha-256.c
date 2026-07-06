@@ -65,8 +65,8 @@ char *sha256(char *str)
 			w[i] = ft_swapIntEndian(set32intbit(word + (4 * i)));
 		for (int i = 16; i < 64; i++)
 		{
-			uint32_t s0 = (rightRotate(w[i - 15], 7)) ^ (rightRotate(w[i - 15], 18)) ^ (w[i - 15] >> 3);
-			uint32_t s1 = (rightRotate(w[i - 2], 17)) ^ (rightRotate(w[i - 2], 19)) ^ (w[i - 2] >> 10);
+			const uint32_t s0 = (rightRotate(w[i - 15], 7)) ^ (rightRotate(w[i - 15], 18)) ^ (w[i - 15] >> 3);
+			const uint32_t s1 = (rightRotate(w[i - 2], 17)) ^ (rightRotate(w[i - 2], 19)) ^ (w[i - 2] >> 10);
 			w[i] = w[i - 16] + s0 + w[i - 7] + s1;
 		}
 
@@ -81,12 +81,12 @@ char *sha256(char *str)
 
 		for (int i = 0; i < 64; i++)
 		{
-			uint32_t S1 = (rightRotate(e, 6)) ^ (rightRotate(e, 11)) ^ (rightRotate(e, 25));
-			uint32_t ch = (e & f) ^ ((~e) & g);
-			uint32_t temp1 = h + S1 + ch + k[i] + w[i];
-			uint32_t S0 = (rightRotate(a, 2)) ^ (rightRotate(a, 13)) ^ (rightRotate(a, 22));
-			uint32_t maj = (a & b) ^ (a & c) ^ (b & c);
-			uint32_t temp2 = S0 + maj;
+			const uint32_t S1 = (rightRotate(e, 6)) ^ (rightRotate(e, 11)) ^ (rightRotate(e, 25));
+			const uint32_t ch = (e & f) ^ ((~e) & g);
+			const uint32_t temp1 = h + S1 + ch + k[i] + w[i];
+			const uint32_t S0 = (rightRotate(a, 2)) ^ (rightRotate(a, 13)) ^ (rightRotate(a, 22));
+			const uint32_t maj = (a & b) ^ (a & c) ^ (b & c);
+			const uint32_t temp2 = S0 + maj;
 
 			h = g;
 			g = f;

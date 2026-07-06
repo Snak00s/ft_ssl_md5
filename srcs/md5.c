@@ -24,7 +24,7 @@ static unsigned char *pad_str(char *str, size_t *pad_len)
 	return (new_msg);
 }
 
-static void build_digest(char *buff, uint32_t a, uint32_t b, uint32_t c, uint32_t d)
+static void build_digest(char *buff, const uint32_t a, const uint32_t b, const uint32_t c, const uint32_t d)
 {
     uint32_t regs[4] = {a, b, c, d};
 	int buff_pos = 0;

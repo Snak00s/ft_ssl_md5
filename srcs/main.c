@@ -3,7 +3,7 @@
 //parse all the flag of the command.
 //return the idx "i" of the last flag
 //in case of error, return "-i" to indicate which flag proc the error
-static int	parse_arg(char **argv, int argc, ssl_flags *flags, t_list **arg)
+static int	parse_arg(char **argv, const int argc, ssl_flags *flags, t_list **arg)
 {
 	int is_string = 0;
 	int end_flag = 0;
@@ -67,7 +67,7 @@ static int	parse_arg(char **argv, int argc, ssl_flags *flags, t_list **arg)
 //this function need a list of algorythm (see 'hash_t' prototype) and the amount of entry the list have
 //
 //in case of error return 0
-static int	find_hashing_algo(char *name, hash_t *algo, hash_t *algo_list, size_t nbr_entry)
+static int	find_hashing_algo(char *name, hash_t *algo, hash_t *algo_list, const size_t nbr_entry)
 {
 	algo->func = NULL;
 	algo->name = NULL;
