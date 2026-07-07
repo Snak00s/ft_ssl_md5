@@ -1,9 +1,10 @@
 #include "ssl.h"
 
-void	print_result(const char *algo_name, char *digest, char *arg, ssl_flags *flags)
+void	print_result(char *algo_name, char *digest, char *arg, ssl_flags *flags)
 {
-	(void)flags;
-	if (flags->r_flag)
+	if (flags->q_flag)
+		ft_printf("%s\n", digest);
+	else if (flags->r_flag)
 		ft_printf("%s %s\n", digest, arg);
 	else
 		ft_printf("%s (%s) = %s\n", algo_name, arg, digest);
@@ -34,7 +35,7 @@ static int hash_string(ssl_msg *thing, hash_t *algo, ssl_flags *flags)
 	char *digest = algo->func(thing->arg);
 	if (!digest)
 		return (0);
-	print_result(algo->name, digest, thing->arg, flags);
+	print_result(algo->print_name, digest, thing->arg, flags);
 	free(digest);
 
 	return (1);
@@ -51,7 +52,7 @@ static int hash_file(ssl_msg *thing, hash_t *algo, ssl_flags *flags)
 		free(msg);
 		return (0);
 	}
-	print_result(algo->name, digest, thing->arg, flags);
+	print_result(algo->print_name, digest, thing->arg, flags);
 	free(msg);
 	free(digest);
 

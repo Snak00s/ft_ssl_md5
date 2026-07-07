@@ -12,7 +12,8 @@
 typedef char *(*hashfunc_t)(char *);
 
 typedef struct hash_t {
-	const char	*name;
+	char		*name;
+	char		*print_name;
 	hashfunc_t	func;
 } hash_t;
 
@@ -40,6 +41,9 @@ int			process_algo(t_list *message, hash_t *algo, ssl_flags *flags);
 
 //sha256
 char		*sha256(char *str);
+
+//whirlpool
+char		*whirlpool(char *str);
 
 //utils
 void		str_bad_cmd(char *cmd);

@@ -7,7 +7,8 @@ SRCS = srcs/main.c \
 		srcs/md5.c \
 		srcs/sha-256.c \
 		srcs/process_hash.c \
-		srcs/process_utils.c
+		srcs/process_utils.c \
+		srcs/whirlpool.c
 
 OBJ_DIR = obj
 OBJ = $(SRCS:%.c=$(OBJ_DIR)/%.o)

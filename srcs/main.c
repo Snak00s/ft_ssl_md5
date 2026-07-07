@@ -77,6 +77,7 @@ static int	find_hashing_algo(char *name, hash_t *algo, hash_t *algo_list, const 
 		{
 			algo->func = algo_list[i].func;
 			algo->name = algo_list[i].name;
+			algo->print_name = algo_list[i].print_name;
 			break;
 		}
 	}
@@ -100,8 +101,9 @@ int main(int argc, char **argv)
 	}
 
 	hash_t	algo_list[] = {
-		{"md5", md5},
-		{"sha256", sha256},
+		{"md5", "MD5", md5},
+		{"sha256", "SHA256", sha256},
+		{"whirlpool", "WHIRLPOOL", whirlpool}
 	};
 
 	hash_t	algo;
