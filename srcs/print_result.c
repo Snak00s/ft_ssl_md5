@@ -1,5 +1,12 @@
 #include"ssl.h"
 
+static int is_returnline(char c)
+{
+	if (c == '\n')
+		return (1);
+	return (0);
+}
+
 void	print_stdin(char *digest, char *arg, int flags)
 {
 	if (flags & SSL_QF)
@@ -9,7 +16,7 @@ void	print_stdin(char *digest, char *arg, int flags)
 	}
 	else if (flags & SSL_PF)
 	{
-		char *formated_arg = ft_strtrim(arg, "\n");
+		char *formated_arg = ft_strreplace(arg, "\\n", is_returnline);
 		if (!formated_arg)
 			return ;
 		ft_printf("(\"%s\")= %s\n", formated_arg, digest);

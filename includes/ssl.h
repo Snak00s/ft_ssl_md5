@@ -34,31 +34,35 @@ typedef struct ssl_msg {
 //md5
 char		*md5(char *str);
 
-//process hash
-int			process_algo(t_list *message, hash_t *algo, int flags);
-
 //sha256
 char		*sha256(char *str);
 
 //whirlpool
 char		*whirlpool(char *str);
 
-//print hash
+//--------------------------------
 
+//process hash
+int			process_algo(t_list *message, hash_t *algo, int flags);
+
+//print hash
 void		print_stdin(char *digest, char *arg, int flags);
 void		print_hash(char *algo_name, char *digest, char *arg, int flags, int type);
+int			flag_to_idx(int flags, int unwanted_flags);
 
-//utils
-void		str_bad_cmd(char *cmd);
+//hash utils
 void		hexaitoa(char *buff, uint32_t byte);
 void		hexaton(char *hexa, size_t len);
 uint32_t	set32intbit(unsigned char *str);
 uint32_t	leftRotate(uint32_t n, uint32_t t);
 uint32_t	rightRotate(uint32_t value, uint32_t n);
-void		invalid_thing(char *arg, char *type);
+
+//utils
 int			read_fd(int fd, char **buff);
 int			read_file(char *filename, char **buff);
 void		free_lst(t_list *s_env, int mode);
-int			flag_to_idx(int flags, int unwanted_flags);
+
+void		str_bad_cmd(char *cmd);
+void		invalid_thing(char *arg, char *type);
 
 #endif

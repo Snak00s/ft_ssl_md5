@@ -6,7 +6,7 @@
 /*   By: tpinton <tpinton@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 18:03:38 by tpinton           #+#    #+#             */
-/*   Updated: 2026/07/03 16:14:03 by tpinton          ###   ########.fr       */
+/*   Updated: 2026/07/08 16:30:41 by tpinton          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,5 @@ char	*ft_strdecapitalize(char *str);
 uint64_t	ft_swapLongEndian(uint64_t nbr);
 uint32_t	ft_swapIntEndian(uint32_t nbr);
 uint16_t	ft_swapShortEndian(uint16_t nbr);
+char	*ft_strreplace(char *str, const char *replace, int (*cond)(char));
 #endif
