@@ -51,7 +51,8 @@ static void	print_hash_q(char *algo_name, char *digest, char *arg, int type)
 void	print_hash(char *algo_name, char *digest, char *arg, int flags, int type)
 {
 	void	(*print[])(char *, char *, char *, int) = {print_hash_nf, print_hash_r, print_hash_q, print_hash_q};
-	print[flag_to_idx(flags)](algo_name, digest, arg, type);
+
+	print[flag_to_idx(flags, SSL_PF)](algo_name, digest, arg, type);
 
 	return ;
 }

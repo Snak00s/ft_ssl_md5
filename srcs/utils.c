@@ -104,9 +104,9 @@ void	free_lst(t_list *s_env, int mode)
 	return ;
 }
 
-int flag_to_idx(int sum_flag)
+int flag_to_idx(int flags, int unwanted_flags)
 {
-	switch (sum_flag & (~SSL_PF))
+	switch (flags & (~unwanted_flags))
 	{
 		case SSL_RF:				return(1);
 		case SSL_QF:				return(2);

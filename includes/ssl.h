@@ -59,7 +59,6 @@ void		invalid_thing(char *arg, char *type);
 int			read_fd(int fd, char **buff);
 int			read_file(char *filename, char **buff);
 void		free_lst(t_list *s_env, int mode);
-int			flag_to_idx(int sum_flag);
-
+int			flag_to_idx(int flags, int unwanted_flags);
 
 #endif
