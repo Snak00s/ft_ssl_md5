@@ -3,7 +3,7 @@
 //parse all the flag of the command.
 //return the idx "i" of the last flag
 //in case of error, return "-i" to indicate which flag proc the error
-static int	parse_arg(char **argv, const int argc, ssl_flags *flags, t_list **arg)
+static int	parse_arg(char **argv, const int argc, int *flags, t_list **arg)
 {
 	int is_string = 0;
 	int end_flag = 0;
@@ -19,16 +19,13 @@ static int	parse_arg(char **argv, const int argc, ssl_flags *flags, t_list **arg
 			switch (str[1])
 			{
 				case 'p':
-					flags->p_flag = 1;
-					flags->sum_flags |= SSL_PF;
+					*flags |= SSL_PF;
 					break;
 				case 'q':
-					flags->q_flag = 1;
-					flags->sum_flags |= SSL_QF;
+					*flags |= SSL_QF;
 					break;
 				case 'r':
-					flags->r_flag = 1;
-					flags->sum_flags |= SSL_RF;
+					*flags |= SSL_RF;
 					break;
 				case 's':
 					is_string = 1;
@@ -94,7 +91,6 @@ static int	find_hashing_algo(char *name, hash_t *algo, hash_t *algo_list, const 
 
 int main(int argc, char **argv)
 {
-	ssl_flags	flags;
 	t_list		*message = NULL;
 	
 	if (argc < 2)
@@ -114,7 +110,7 @@ int main(int argc, char **argv)
 	if (!find_hashing_algo(argv[1], &algo, algo_list, sizeof(algo_list) / sizeof(*algo_list)))
 		return (1);
 
-	ft_memset(&flags, 0, sizeof(flags));
+	int flags = 0;
 	int f_ind = parse_arg(argv, argc, &flags, &message);
 	if (f_ind <= 0)
 	{
@@ -124,7 +120,7 @@ int main(int argc, char **argv)
 		return (1);
 	}
 
-	if (!process_algo(message, &algo, &flags))
+	if (!process_algo(message, &algo, flags))
 		return (free_lst(message, 1), 1);
 
 	free_lst(message, 1);

@@ -21,13 +21,6 @@ typedef struct hash_t {
 	hashfunc_t	func;
 } hash_t;
 
-typedef struct ssl_flags {
-	unsigned char	p_flag;
-	unsigned char	q_flag;
-	unsigned char	r_flag;
-	unsigned int	sum_flags;
-} ssl_flags;
-
 enum ssl_msg_type {
 	SSL_STRING,
 	SSL_FILE
@@ -42,7 +35,7 @@ typedef struct ssl_msg {
 char		*md5(char *str);
 
 //process hash
-int			process_algo(t_list *message, hash_t *algo, ssl_flags *flags);
+int			process_algo(t_list *message, hash_t *algo, int flags);
 
 //sha256
 char		*sha256(char *str);
@@ -52,8 +45,8 @@ char		*whirlpool(char *str);
 
 //print hash
 
-void		print_stdin(char *digest, char *arg, ssl_flags *flags);
-void		print_hash(char *algo_name, char *digest, char *arg, int sum_flags, int type);
+void		print_stdin(char *digest, char *arg, int flags);
+void		print_hash(char *algo_name, char *digest, char *arg, int flags, int type);
 
 //utils
 void		str_bad_cmd(char *cmd);

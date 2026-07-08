@@ -1,17 +1,17 @@
 #include "ssl.h"
 
-static int hash_string(ssl_msg *thing, hash_t *algo, ssl_flags *flags)
+static int hash_string(ssl_msg *thing, hash_t *algo, int flags)
 {
 	char *digest = algo->func(thing->arg);
 	if (!digest)
 		return (0);
-	print_hash(algo->print_name, digest, thing->arg, flags->sum_flags, thing->type);
+	print_hash(algo->print_name, digest, thing->arg, flags, thing->type);
 	free(digest);
 
 	return (1);
 }
 
-static int hash_file(ssl_msg *thing, hash_t *algo, ssl_flags *flags)
+static int hash_file(ssl_msg *thing, hash_t *algo, int flags)
 {
 	char *msg = NULL;
 	if (!read_file(thing->arg, &msg))
@@ -22,7 +22,7 @@ static int hash_file(ssl_msg *thing, hash_t *algo, ssl_flags *flags)
 		free(msg);
 		return (0);
 	}
-	print_hash(algo->print_name, digest, thing->arg, flags->sum_flags, thing->type);
+	print_hash(algo->print_name, digest, thing->arg, flags, thing->type);
 	free(msg);
 	free(digest);
 
@@ -32,11 +32,11 @@ static int hash_file(ssl_msg *thing, hash_t *algo, ssl_flags *flags)
 //if no file / string -> try to read stdin
 //if stdin and file / string but no -p -> only read file / string
 //if ........................... and -p -> read stdin + file / string
-int process_algo(t_list *message, hash_t *algo, ssl_flags *flags)
+int process_algo(t_list *message, hash_t *algo, int flags)
 {
-	int (*hash_func[2])(ssl_msg *, hash_t *, ssl_flags *) = {hash_string, hash_file};
+	int (*hash_func[2])(ssl_msg *, hash_t *, int) = {hash_string, hash_file};
 
-	if (!message || flags->p_flag)
+	if (!message || flags & SSL_PF)
 	{
 		char *msg = NULL;
 		read_fd(0, &msg);
@@ -46,7 +46,7 @@ int process_algo(t_list *message, hash_t *algo, ssl_flags *flags)
 			free(msg);
 			return (0);
 		}
-		char *arg = flags->p_flag ? msg : "stdin";
+		char *arg = (flags & SSL_PF) ? msg : "stdin";
 		print_stdin(digest, arg, flags);
 		free(msg);
 		free(digest);

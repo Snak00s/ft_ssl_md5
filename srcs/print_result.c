@@ -1,13 +1,13 @@
 #include"ssl.h"
 
-void	print_stdin(char *digest, char *arg, ssl_flags *flags)
+void	print_stdin(char *digest, char *arg, int flags)
 {
-	if (flags->q_flag)
+	if (flags & SSL_QF)
 	{
 		write(1, digest, ft_strlen(digest));
 		write(1, "\n", 1);
 	}
-	else if (flags->p_flag)
+	else if (flags & SSL_PF)
 	{
 		char *formated_arg = ft_strtrim(arg, "\n");
 		if (!formated_arg)
@@ -48,10 +48,10 @@ static void	print_hash_q(char *algo_name, char *digest, char *arg, int type)
 	return ;
 }
 
-void	print_hash(char *algo_name, char *digest, char *arg, int sum_flags, int type)
+void	print_hash(char *algo_name, char *digest, char *arg, int flags, int type)
 {
 	void	(*print[])(char *, char *, char *, int) = {print_hash_nf, print_hash_r, print_hash_q, print_hash_q};
-	print[flag_to_idx(sum_flags)](algo_name, digest, arg, type);
+	print[flag_to_idx(flags)](algo_name, digest, arg, type);
 
 	return ;
 }
