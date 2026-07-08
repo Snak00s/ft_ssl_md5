@@ -1,29 +1,32 @@
 #include "ssl.h"
 
-static int hash_string(ssl_msg *thing, hash_t *algo, int flags)
+static int hash_string(ssl_msg *message, hash_t *current_algo, int flags)
 {
-	char *digest = algo->func(thing->arg);
+	char *digest = current_algo->func(message->arg);
 	if (!digest)
 		return (0);
-	print_hash(algo->print_name, digest, thing->arg, flags, thing->type);
+
+	print_hash(current_algo->print_name, digest, message->arg, flags, message->type);
 	free(digest);
 
 	return (1);
 }
 
-static int hash_file(ssl_msg *thing, hash_t *algo, int flags)
+static int hash_file(ssl_msg *message, hash_t *current_algo, int flags)
 {
-	char *msg = NULL;
-	if (!read_file(thing->arg, &msg))
+	char *to_crypt = NULL;
+	if (!read_file(message->arg, &to_crypt))
 			return (0);
-	char *digest = algo->func(msg);
+
+	char *digest = current_algo->func(to_crypt);
 	if (!digest)
 	{
-		free(msg);
+		free(to_crypt);
 		return (0);
 	}
-	print_hash(algo->print_name, digest, thing->arg, flags, thing->type);
-	free(msg);
+
+	print_hash(current_algo->print_name, digest, message->arg, flags, message->type);
+	free(to_crypt);
 	free(digest);
 
 	return (1);
@@ -32,31 +35,32 @@ static int hash_file(ssl_msg *thing, hash_t *algo, int flags)
 //if no file / string -> try to read stdin
 //if stdin and file / string but no -p -> only read file / string
 //if ........................... and -p -> read stdin + file / string
-int process_algo(t_list *message, hash_t *algo, int flags)
+int process_algo(t_list *msg_list, hash_t *current_algo, int flags)
 {
 	int (*hash_func[2])(ssl_msg *, hash_t *, int) = {hash_string, hash_file};
 
-	if (!message || flags & SSL_PF)
+	if (!msg_list || flags & SSL_PF)
 	{
-		char *msg = NULL;
-		read_fd(0, &msg);
-		char *digest = algo->func(msg);
+		char *to_crypt = NULL;
+		read_fd(0, &to_crypt);
+		char *digest = current_algo->func(to_crypt);
 		if (!digest)
 		{
-			free(msg);
+			free(to_crypt);
 			return (0);
 		}
-		char *arg = (flags & SSL_PF) ? msg : "stdin";
+		char *arg = (flags & SSL_PF) ? to_crypt : "stdin";
 		print_stdin(digest, arg, flags);
-		free(msg);
+		free(to_crypt);
 		free(digest);
 	}
-	t_list *temp = message;
+
+	t_list *temp = msg_list;
 	while (temp)
 	{
-		ssl_msg	*thing = (ssl_msg *)temp->content;
-		if (!hash_func[thing->type](thing, algo, flags))
-			ft_printf("ft_ssl: %s: %s: No such file or directory\n", algo->name, thing->arg);
+		ssl_msg	*message = (ssl_msg *)temp->content;
+		if (!hash_func[message->type](message, current_algo, flags))
+			ft_printf("ft_ssl: %s: %s: No such file or directory\n", current_algo->name, message->arg);
 		temp = temp->next;
 	}
 	return (1);

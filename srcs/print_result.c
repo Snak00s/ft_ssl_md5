@@ -26,6 +26,8 @@ void	print_stdin(char *digest, char *arg, int flags)
 		ft_printf("(%s)= %s\n", arg, digest);
 }
 
+//-----------------------------------------------------------------------
+
 static void	print_hash_nf(char *algo_name, char *digest, char *arg, int type)
 {
 	if (type == SSL_FILE)

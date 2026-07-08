@@ -36,23 +36,23 @@ static int	parse_arg(char **argv, const int argc, int *flags, t_list **arg)
 		}
 		else
 		{
-			ssl_msg *thing = ft_calloc(1, sizeof(ssl_msg));
-			if (!thing)
+			ssl_msg *message = ft_calloc(1, sizeof(ssl_msg));
+			if (!message)
 				return (0);
-			thing->arg = argv[i];
-			thing->type = ((is_string == 1) ? SSL_STRING : SSL_FILE);
+			message->arg = argv[i];
+			message->type = ((is_string == 1) ? SSL_STRING : SSL_FILE);
 			end_flag = ((is_string == 1) ? 0 : 1);
 			is_string = 0;
 
 			if (!*arg)
 			{
-				*arg = ft_lstnew(thing);
+				*arg = ft_lstnew(message);
 				if (!*arg)
 					return (0);
 			}
 			else
 			{
-				t_list *new = ft_lstnew(thing);
+				t_list *new = ft_lstnew(message);
 				if (!new)
 					return (0);
 				ft_lstadd_back(arg, new);
@@ -63,25 +63,25 @@ static int	parse_arg(char **argv, const int argc, int *flags, t_list **arg)
 	return (1);
 }
 
-//find and put in "algo" the corresponding hashing algorithm base on "name"
+//find and put in "current_algo" the corresponding hashing algorithm base on "name"
 //this function need a list of algorythm (see 'hash_t' prototype) and the amount of entry the list have
 //
 //in case of error return 0
-static int	find_hashing_algo(char *name, hash_t *algo, hash_t *algo_list, const size_t nbr_entry)
+static int	find_hashing_algo(char *name, hash_t *current_algo, hash_t *algo_list, const size_t nbr_entry)
 {
-	algo->func = NULL;
-	algo->name = NULL;
+	current_algo->func = NULL;
+	current_algo->name = NULL;
 	for (size_t i = 0; i < nbr_entry; i++)
 	{
 		if (ft_strncmp(name, algo_list[i].name, ft_strlen((char *)algo_list[i].name)) == 0)
 		{
-			algo->func = algo_list[i].func;
-			algo->name = algo_list[i].name;
-			algo->print_name = algo_list[i].print_name;
+			current_algo->func = algo_list[i].func;
+			current_algo->name = algo_list[i].name;
+			current_algo->print_name = algo_list[i].print_name;
 			break;
 		}
 	}
-	if (!algo->func)
+	if (!current_algo->func)
 	{
 		str_bad_cmd(name);
 		return (0);
@@ -91,7 +91,7 @@ static int	find_hashing_algo(char *name, hash_t *algo, hash_t *algo_list, const 
 
 int main(int argc, char **argv)
 {
-	t_list		*message = NULL;
+	t_list		*msg_list = NULL;
 	
 	if (argc < 2)
 	{
@@ -105,24 +105,26 @@ int main(int argc, char **argv)
 		{"whirlpool", "WHIRLPOOL", whirlpool}
 	};
 
-	hash_t	algo;
-
-	if (!find_hashing_algo(argv[1], &algo, algo_list, sizeof(algo_list) / sizeof(*algo_list)))
+	hash_t	current_algo;
+	if (!find_hashing_algo(argv[1], &current_algo, algo_list, sizeof(algo_list) / sizeof(*algo_list)))
 		return (1);
 
 	int flags = 0;
-	int f_ind = parse_arg(argv, argc, &flags, &message);
+	int f_ind = parse_arg(argv, argc, &flags, &msg_list);
 	if (f_ind <= 0)
 	{
 		if (f_ind == 0)
+		{
 			printf("Alloc Error\n");
-		invalid_thing(argv[-f_ind], "flag");
+			return (1);
+		}
+		invalid_param(argv[-f_ind], "flag");
 		return (1);
 	}
 
-	if (!process_algo(message, &algo, flags))
-		return (free_lst(message, 1), 1);
+	if (!process_algo(msg_list, &current_algo, flags))
+		return (free_lst(msg_list, 1), 1);
 
-	free_lst(message, 1);
+	free_lst(msg_list, 1);
 	return (0);
 }

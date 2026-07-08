@@ -14,7 +14,7 @@ void str_bad_cmd(char *cmd)
 	write(2, msg, ft_strlen(msg));
 }
 
-void	invalid_thing(char *arg, char *type)
+void	invalid_param(char *arg, char *type)
 {
 	const int size = 34 + ft_strlen(arg) + ft_strlen(type);
 	char err_msg[size + 1];
@@ -27,7 +27,7 @@ void	invalid_thing(char *arg, char *type)
 	write(1, err_msg, size);
 }
 
-void	hexaton(char *hexa, size_t len)
+static void	hexaton(char *hexa, size_t len)
 {
 	size_t	i = 0;
 	while (i <= len / 2)

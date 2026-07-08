@@ -1,4 +1,4 @@
-NAME = ft_ssl_md5
+NAME = ft_ssl
 
 CC = cc -Wall -Werror -Wextra -g -Iincludes/
 
