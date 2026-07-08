@@ -108,9 +108,13 @@ int flag_to_idx(int flags, int unwanted_flags)
 {
 	switch (flags & (~unwanted_flags))
 	{
-		case SSL_RF:				return(1);
-		case SSL_QF:				return(2);
-		case (SSL_QF | SSL_RF):		return(3);
+		case SSL_RF:							return(1);
+		case SSL_QF:							return(2);
+		case (SSL_QF | SSL_RF):					return(3);
+		case SSL_PF:							return(4);
+		case (SSL_PF | SSL_RF):					return(5);
+		case (SSL_PF | SSL_QF):					return(6);
+		case (SSL_PF | SSL_RF | SSL_QF):		return(7);
 	}
 	return (0);
 }
