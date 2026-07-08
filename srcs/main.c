@@ -20,12 +20,15 @@ static int	parse_arg(char **argv, const int argc, ssl_flags *flags, t_list **arg
 			{
 				case 'p':
 					flags->p_flag = 1;
+					flags->sum_flags |= SSL_PF;
 					break;
 				case 'q':
 					flags->q_flag = 1;
+					flags->sum_flags |= SSL_QF;
 					break;
 				case 'r':
 					flags->r_flag = 1;
+					flags->sum_flags |= SSL_RF;
 					break;
 				case 's':
 					is_string = 1;

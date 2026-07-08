@@ -9,6 +9,10 @@
 #include<stdint.h>
 #include<string.h>
 
+#define SSL_RF 0b0000000000000001
+#define SSL_QF 0b0000000000000010
+#define SSL_PF 0b0000000000000100
+
 typedef char *(*hashfunc_t)(char *);
 
 typedef struct hash_t {
@@ -21,6 +25,7 @@ typedef struct ssl_flags {
 	unsigned char	p_flag;
 	unsigned char	q_flag;
 	unsigned char	r_flag;
+	unsigned int	sum_flags;
 } ssl_flags;
 
 enum ssl_msg_type {
@@ -45,6 +50,11 @@ char		*sha256(char *str);
 //whirlpool
 char		*whirlpool(char *str);
 
+//print hash
+
+void		print_stdin(char *digest, char *arg, ssl_flags *flags);
+void		print_hash(char *algo_name, char *digest, char *arg, int sum_flags, int type);
+
 //utils
 void		str_bad_cmd(char *cmd);
 void		hexaitoa(char *buff, uint32_t byte);
@@ -56,6 +66,7 @@ void		invalid_thing(char *arg, char *type);
 int			read_fd(int fd, char **buff);
 int			read_file(char *filename, char **buff);
 void		free_lst(t_list *s_env, int mode);
+int			flag_to_idx(int sum_flag);
 
 
 #endif

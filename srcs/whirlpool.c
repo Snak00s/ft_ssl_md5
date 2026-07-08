@@ -50,7 +50,7 @@ static unsigned char *pad_str(char *str, size_t *pad_len)
 	return (new_msg);
 }
 
-static void	matrix_xor(uint8_t *first, uint8_t *second, uint8_t *dest, size_t size)
+static void	matrix_xor_uint8(uint8_t *first, uint8_t *second, uint8_t *dest, size_t size)
 {
 	for (size_t i = 0; i < size; i++)
 		dest[i] = first[i] ^ second[i];
@@ -118,7 +118,7 @@ static void whirlpoolRound(uint8_t *matrix, uint8_t *key)
 			matrix[i * 8 + j] = tmp[((i - j + 8) % 8) * 8 + j];
 	}
 	dotProduct(matrix, C, matrix);
-	matrix_xor(matrix, key, matrix, 64);
+	matrix_xor_uint8(matrix, key, matrix, 64);
 
 	return ;
 }
@@ -156,7 +156,7 @@ char *whirlpool(char *str)
 		uint8_t Kr[64];
 		ft_memcpy(Kr, H, 64);
 
-		matrix_xor(w, H, w, 64);
+		matrix_xor_uint8(w, H, w, 64);
 		for (int r = 1; r <= R; r++)
 		{
 			uint8_t cr[64];
@@ -165,8 +165,8 @@ char *whirlpool(char *str)
 			whirlpoolRound(w, Kr);
 		}
 
-		matrix_xor(H, w, H, 64);
-		matrix_xor(H, word, H, 64);
+		matrix_xor_uint8(H, w, H, 64);
+		matrix_xor_uint8(H, word, H, 64);
 	}
 
 	char result[129];
