@@ -16,9 +16,13 @@ static void	print_hash_stdin_nf(char *digest, char *arg)
 
 static void	print_hash_stdin_p(char *digest, char *arg)
 {
-	char *formated_arg = ft_strreplace(arg, "\\n", is_returnline);
+	char *trim_arg = ft_strtrim(arg, "\n");
+	if (!trim_arg)
+		return ;
+	char *formated_arg = ft_strreplace(trim_arg, "\\n", is_returnline);
 	if (!formated_arg)
 		return ;
+	free(trim_arg);
 	ft_printf("(\"%s\")= %s\n", formated_arg, digest);
 	free(formated_arg);
 

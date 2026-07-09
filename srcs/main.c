@@ -92,7 +92,7 @@ static int	find_hashing_algo(char *name, hash_t *current_algo, hash_t *algo_list
 int main(int argc, char **argv)
 {
 	t_list		*msg_list = NULL;
-	
+
 	if (argc < 2)
 	{
 		write(2, "usage: ft_ssl command [flags] [file/string]\n", 45);
