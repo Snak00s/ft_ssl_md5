@@ -1,8 +1,7 @@
 #include "ssl.h"
 
-static int hash_string(ssl_msg *message, hash_t *current_algo, int flags)
+static int hash_string(ssl_msg *message, hash_t *current_algo)
 {
-	(void)flags;
 	char *digest = current_algo->hash_func(message->arg);
 	if (!digest)
 		return (0);
@@ -13,9 +12,8 @@ static int hash_string(ssl_msg *message, hash_t *current_algo, int flags)
 	return (1);
 }
 
-static int hash_file(ssl_msg *message, hash_t *current_algo, int flags)
+static int hash_file(ssl_msg *message, hash_t *current_algo)
 {
-	(void)flags;
 	char *to_crypt = NULL;
 	if (!read_file(message->arg, &to_crypt))
 			return (0);
@@ -39,7 +37,7 @@ static int hash_file(ssl_msg *message, hash_t *current_algo, int flags)
 //if ........................... and -p -> read stdin + file / string
 int process_algo(t_list *msg_list, hash_t *current_algo, int flags)
 {
-	int (*hash_func[2])(ssl_msg *, hash_t *, int) = {hash_string, hash_file};
+	int (*hash_func[2])(ssl_msg *, hash_t *) = {hash_string, hash_file};
 
 	if (!msg_list || flags & SSL_PF)
 	{
@@ -61,7 +59,7 @@ int process_algo(t_list *msg_list, hash_t *current_algo, int flags)
 	while (temp)
 	{
 		ssl_msg	*message = (ssl_msg *)temp->content;
-		if (!hash_func[message->type](message, current_algo, flags))
+		if (!hash_func[message->type](message, current_algo))
 			ft_printf("ft_ssl: %s: %s: No such file or directory\n", current_algo->name, message->arg);
 		temp = temp->next;
 	}
