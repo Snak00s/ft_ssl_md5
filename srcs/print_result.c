@@ -95,12 +95,15 @@ static void	print_hash_q(char *algo_name, char *digest, char *arg, int type)
 	return ;
 }
 
-void	print_hash(char *algo_name, char *digest, char *arg, int flags, int type)
+int	find_print_func(hash_t *current_algo, int flags)
 {
 	void	(*print[])(char *, char *, char *, int) = {print_hash_nf, print_hash_r, print_hash_q, print_hash_q};
 
-	int idx = flag_to_idx(flags, SSL_PF);
-	print[idx](algo_name, digest, arg, type);
+	size_t idx = flag_to_idx(flags, SSL_PF);
 
-	return ;
+	if (idx >= sizeof(print) / 8 || !print[idx])
+		return (0);
+
+	current_algo->print_func = print[idx];
+	return (1);
 }

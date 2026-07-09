@@ -2,11 +2,12 @@
 
 static int hash_string(ssl_msg *message, hash_t *current_algo, int flags)
 {
-	char *digest = current_algo->func(message->arg);
+	(void)flags;
+	char *digest = current_algo->hash_func(message->arg);
 	if (!digest)
 		return (0);
 
-	print_hash(current_algo->print_name, digest, message->arg, flags, message->type);
+	current_algo->print_func(current_algo->print_name, digest, message->arg, message->type);
 	free(digest);
 
 	return (1);
@@ -14,18 +15,19 @@ static int hash_string(ssl_msg *message, hash_t *current_algo, int flags)
 
 static int hash_file(ssl_msg *message, hash_t *current_algo, int flags)
 {
+	(void)flags;
 	char *to_crypt = NULL;
 	if (!read_file(message->arg, &to_crypt))
 			return (0);
 
-	char *digest = current_algo->func(to_crypt);
+	char *digest = current_algo->hash_func(to_crypt);
 	if (!digest)
 	{
 		free(to_crypt);
 		return (0);
 	}
 
-	print_hash(current_algo->print_name, digest, message->arg, flags, message->type);
+	current_algo->print_func(current_algo->print_name, digest, message->arg, message->type);
 	free(to_crypt);
 	free(digest);
 
@@ -43,7 +45,7 @@ int process_algo(t_list *msg_list, hash_t *current_algo, int flags)
 	{
 		char *to_crypt = NULL;
 		read_fd(0, &to_crypt);
-		char *digest = current_algo->func(to_crypt);
+		char *digest = current_algo->hash_func(to_crypt);
 		if (!digest)
 		{
 			free(to_crypt);

@@ -15,10 +15,19 @@
 
 typedef char *(*hashfunc_t)(char *);
 
-typedef struct hash_t {
+typedef struct hash_refs_t {
 	char		*name;
 	char		*print_name;
 	hashfunc_t	func;
+} hash_refs_t;
+
+typedef void (*print_t)(char *, char *, char *, int);
+
+typedef struct hash_t {
+	char		*name;
+	char		*print_name;
+	hashfunc_t	hash_func;
+	print_t		print_func;
 } hash_t;
 
 enum ssl_msg_type {
@@ -47,8 +56,8 @@ int			process_algo(t_list *msg_list, hash_t *current_algo, int flags);
 
 //print hash
 void		print_stdin(char *digest, char *arg, int flags);
-void		print_hash(char *algo_name, char *digest, char *arg, int flags, int type);
 int			flag_to_idx(int flags, int unwanted_flags);
+int			find_print_func(hash_t *current_algo, int flags);
 
 //hash utils
 void		hexaitoa(char *buff, uint32_t byte);

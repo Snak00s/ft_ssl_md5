@@ -64,24 +64,22 @@ static int	parse_arg(char **argv, const int argc, int *flags, t_list **arg)
 }
 
 //find and put in "current_algo" the corresponding hashing algorithm base on "name"
-//this function need a list of algorythm (see 'hash_t' prototype) and the amount of entry the list have
+//this function need a list of algorythm (see 'hash_refs_t' prototype) and the amount of entry the list have
 //
 //in case of error return 0
-static int	find_hashing_algo(char *name, hash_t *current_algo, hash_t *algo_list, const size_t nbr_entry)
+static int	find_hashing_algo(char *name, hash_t *current_algo, hash_refs_t *algo_list, const size_t nbr_entry)
 {
-	current_algo->func = NULL;
-	current_algo->name = NULL;
 	for (size_t i = 0; i < nbr_entry; i++)
 	{
 		if (ft_strncmp(name, algo_list[i].name, ft_strlen((char *)algo_list[i].name)) == 0)
 		{
-			current_algo->func = algo_list[i].func;
+			current_algo->hash_func = algo_list[i].func;
 			current_algo->name = algo_list[i].name;
 			current_algo->print_name = algo_list[i].print_name;
 			break;
 		}
 	}
-	if (!current_algo->func)
+	if (!current_algo->hash_func)
 	{
 		str_bad_cmd(name);
 		return (0);
@@ -99,13 +97,14 @@ int main(int argc, char **argv)
 		return (1);
 	}
 
-	hash_t	algo_list[] = {
+	hash_refs_t	algo_list[] = {
 		{"md5", "MD5", md5},
 		{"sha256", "SHA256", sha256},
 		{"whirlpool", "WHIRLPOOL", whirlpool}
 	};
 
 	hash_t	current_algo;
+	ft_memset(&current_algo, 0, sizeof(hash_t));
 	if (!find_hashing_algo(argv[1], &current_algo, algo_list, sizeof(algo_list) / sizeof(*algo_list)))
 		return (1);
 
@@ -115,10 +114,16 @@ int main(int argc, char **argv)
 	{
 		if (f_ind == 0)
 		{
-			printf("Alloc Error\n");
+			ft_printf("Alloc Error\n");
 			return (1);
 		}
 		invalid_param(argv[-f_ind], "flag");
+		return (1);
+	}
+
+	if (!find_print_func(&current_algo, flags))
+	{
+		ft_printf("ft_ssl: error while processing.\n");
 		return (1);
 	}
 
