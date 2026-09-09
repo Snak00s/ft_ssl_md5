@@ -2,7 +2,7 @@
 
 //parse all the flag of the command.
 //return the idx "i" of the last flag
-//in case of error, return "-i" to indicate which flag proc the error
+//in case of error, return "-i" or "-argc" to indicate which flag proc the error
 static int	parse_arg(char **argv, const int argc, int *flags, t_list **arg)
 {
 	int is_string = 0;
@@ -60,6 +60,8 @@ static int	parse_arg(char **argv, const int argc, int *flags, t_list **arg)
 		}
 		i++;
 	}
+	if (is_string)
+		return (-argc);
 	return (1);
 }
 
@@ -117,7 +119,10 @@ int main(int argc, char **argv)
 			ft_printf("Alloc Error\n");
 			return (1);
 		}
-		invalid_param(argv[-f_ind], "flag");
+		else if (-f_ind < argc)
+			invalid_param(argv[-f_ind], "flag");
+		else
+			ft_printf("ft_ssl: Error: Incorrect use.\n");
 		return (1);
 	}
 
