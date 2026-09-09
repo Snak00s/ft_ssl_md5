@@ -1,5 +1,7 @@
 #include"ssl.h"
 
+
+//padding, mandatory to make every message workable and different
 static unsigned char *pad_str(char *str, size_t *pad_len)
 {
 	uint32_t	msg_len = ft_strlen(str);
@@ -24,6 +26,7 @@ static unsigned char *pad_str(char *str, size_t *pad_len)
 	return (new_msg);
 }
 
+//reverse nthe endian of the result and put it in buff
 static void build_digest(char *buff, uint32_t *base)
 {
 	int buff_pos = 0;
@@ -38,10 +41,14 @@ static void build_digest(char *buff, uint32_t *base)
 	return ;
 }
 
+
+//implemetation of the sha-256 crypt hash algo
 char *sha256(char *str)
 {
+	//uint32_t conversion of the fractionnal part of the square root (^2) of 2, 3, 5, 7, 11, 13, 17, 19
 	uint32_t base[8] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
 
+	//uint32_t conversion of the fractionnal part of the cube root (^3) of 2, 3, 5, 7, 11, 13, 17, 19, ..., 311
 	uint32_t k[64] = {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
 						0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
 						0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
@@ -56,13 +63,16 @@ char *sha256(char *str)
 	if (!pad)
 		return (NULL);
 
+	//main loop operate on chunks of 512 bits
 	for (size_t chunk = 0; chunk < pad_len; chunk += 64)
 	{
 		unsigned char *word = pad + chunk;
 		uint32_t w[64];
 		ft_memset(&w, 0, 64);
+		//16 first byte are simply a copy of the message chunk
 		for (int i = 0; i < 16; i++)
 			w[i] = ft_swapIntEndian(set32intbit(word + (4 * i)));
+		//remain are a transformation of the message chunk
 		for (int i = 16; i < 64; i++)
 		{
 			const uint32_t s0 = (rightRotate(w[i - 15], 7)) ^ (rightRotate(w[i - 15], 18)) ^ (w[i - 15] >> 3);
@@ -79,6 +89,7 @@ char *sha256(char *str)
 		uint32_t g = base[6];
 		uint32_t h = base[7];
 
+		//one-way compression loop (Davies-Meyer)
 		for (int i = 0; i < 64; i++)
 		{
 			const uint32_t S1 = (rightRotate(e, 6)) ^ (rightRotate(e, 11)) ^ (rightRotate(e, 25));
